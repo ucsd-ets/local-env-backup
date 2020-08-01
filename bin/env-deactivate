@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -a
+
+# Good for now
+PYTHONUSERBASE=

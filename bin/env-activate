@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -a
+
+# Get where the kernelspec is installed
+KERNEL_DIR=`
+jupyter kernelspec list | tail -n +2 | while read line ; do
+    name_loc=($line)
+    if [ "${name_loc[0]}" = "$1" ]; then
+        echo ${name_loc[1]}
+    fi
+done`
+
+if [ -z "$KERNEL_DIR" ]; then
+    echo "Kernel \"${1}\" does not exist"
+    exit 1
+fi
+
+# path to environment variable definitions for the kernel
+activate_script=$KERNEL_DIR/activate.sh
+
+if [ ! -f $activate_script ]; then
+    echo "Kernel config \"$activate_script\" does not exist"
+    exit 1
+fi
+
+source $activate_script
+echo "Kernel \"${1}\" activated" 

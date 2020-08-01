@@ -16,16 +16,26 @@ def backup_local(dest):
     shutil.copytree(os.path.expanduser('~/.local'), dest)
 
 
-def remove_local(args):
-    shutil.rmtree(os.path.expanduser('~/.local/lib'))
+def remove_local():
+    src = os.path.expanduser('~/.local/lib')
+    if os.path.exists(src):
+        remove_dir(src)
 
 
 def valid_label(label):
     return not re.search(r'[^a-zA-Z0-9._\-]', label)
 
 
-def prompt_proceed(display_str):
+def prompt_proceed_exit(display_str):
     prompt = input(display_str)
     if prompt.strip().lower() not in ['y', 'yes']:
         print('exit')
         sys.exit(0)
+
+def prompt_proceed(display_str):
+    prompt = input(display_str)
+    return prompt.strip().lower() in ['y', 'yes']
+
+
+def remove_dir(src):
+    shutil.rmtree(src)
