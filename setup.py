@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name='env-backup',
-    version='0.0.2',
-    description='Backup your .local python environment',
+    version='0.0.3',
+    description='Backup and switch between local python environment',
     url='http://github.com/ucsd-ets/local-env-backup',
     author='Yuxin Zou',
     license='MIT',

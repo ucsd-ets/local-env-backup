@@ -2,5 +2,5 @@
 
 set -a
 
-# Good for now
+# TODO: Good for now, may add functionality for reseting other var
 PYTHONUSERBASE=

@@ -95,4 +95,4 @@ class TestCommands(TestCase):
             output_2 = self.f.getvalue()
 
         self.assertIn('Done', output_1)
-        self.assertNotIn('python3_test', output_2)
+        self.assertNotIn('python3_test ', output_2)

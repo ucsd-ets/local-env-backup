@@ -1,28 +1,44 @@
 #!/bin/bash
 
+# This script has some of the most hacky ways of getting around things to work
+#   Please let me know if there is a better way. Good luck, I did my best
+#   One reason is that this script has to run with `source env-activate`
+#   You can figure out the rest :D
+
 set -a
 
-# Get where the kernelspec is installed
-KERNEL_DIR=`
-jupyter kernelspec list | tail -n +2 | while read line ; do
-    name_loc=($line)
-    if [ "${name_loc[0]}" = "$1" ]; then
-        echo ${name_loc[1]}
+# while loop do enter sub-shell for easy exit
+while true; do
+    # so it begins
+    echo 'echo error' > /tmp/echo_error
+
+    # Get where the kernelspec is installed
+    KERNEL_DIR=`
+    jupyter kernelspec list | tail -n +2 | while read line ; do
+        name_loc=($line)
+        if [ "${name_loc[0]}" = "$1" ]; then
+            echo ${name_loc[1]}
+        fi
+    done`
+
+    if [ -z "$KERNEL_DIR" ]; then
+        echo "Kernel \"${1}\" does not exist"
+        break # exit
     fi
-done`
 
-if [ -z "$KERNEL_DIR" ]; then
-    echo "Kernel \"${1}\" does not exist"
-    exit 1
-fi
+    # path to environment variable definitions for the kernel
+    activate_script=$KERNEL_DIR/activate.sh
 
-# path to environment variable definitions for the kernel
-activate_script=$KERNEL_DIR/activate.sh
+    if [ ! -f $activate_script ]; then
+        echo "Kernel config \"$activate_script\" does not exist"
+        break # exit
+    fi
 
-if [ ! -f $activate_script ]; then
-    echo "Kernel config \"$activate_script\" does not exist"
-    exit 1
-fi
+    # Persist var outside shell
+    echo $activate_script > /tmp/activate_script
+    break
+done
+
+activate_script=$( [[ -f /tmp/activate_script ]] && cat /tmp/activate_script && rm -f /tmp/activate_script || echo /tmp/echo_error)
 
 source $activate_script
-echo "Kernel \"${1}\" activated" 

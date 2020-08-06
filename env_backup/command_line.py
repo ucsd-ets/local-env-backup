@@ -75,39 +75,32 @@ def remove_kernel(args):
     print('Done')
 
 
-
-
-# def activate_kernel(args):
-#     kernel_name = args.kernel_name
-#     userbase = get_userbase(kernel_name)
-#     if userbase:
-#         print(f'export PYTHONUSERBASE={userbase}', end=' && ')
-#         print(f"echo 'Success, kernel \"{kernel_name}\" activated\n'", end=' && false \n')
-#         print("!!! IF YOU SEE THIS MESSAGE", end=' && ')
-#         print("use \"eval `env-backup activate <python3_env>`\" !!!")
-#     else:
-#         print(f"echo 'PYTHONUSERBASE not set in kernel \"{kernel_name}\"'")
-
-
-# def deactivate_kernel(args):
-#     print(f'export PYTHONUSERBASE=', end=' && ')
-#     print(f"echo 'Success, kernel deactivated\n'", end=' && false \n')
-#     print("!!! IF YOU SEE THIS MESSAGE", end=' && ')
-#     print("use \"eval `env-backup deactivate`\" !!!")
-
-
 def get_parser():
-    parser = argparse.ArgumentParser(prog='env-backup')
+    parser = argparse.ArgumentParser(
+        prog='env-backup',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='\n'.join([
+            '----------',
+            'env-activate, env-deactivate for switching between environments:',
+            '  usage: source env-activate <KERNEL_NAME>',
+            '         source env-deactivate',
+            '  Manually verify by checking if `echo $PYTHONUSEBASE` is present'
+        ])
+    )
+
     subparsers = parser.add_subparsers(help='Commands to choose from')
 
+    # Parser for command `new`
     parser_a = subparsers.add_parser('new', help='Create a new pip environment backup')
     parser_a.add_argument('--name', '-n', default=fmt_now(), help='Set name for new environment')
     parser_a.add_argument('--yes', '-y', action='store_true', help='automatically set every option to true')
     parser_a.set_defaults(func=new_kernel)
 
+    # Parser for command `list`
     parser_b = subparsers.add_parser('list', help='List current environments (jupyter kernels)')
     parser_b.set_defaults(func=list_kernel)
 
+    # Parser for command `remove`
     parser_c = subparsers.add_parser('remove', help='Remove envionment by name')
     parser_c.add_argument('kernel_name')
     parser_c.set_defaults(func=remove_kernel)
